@@ -236,9 +236,29 @@ This document describes AnyEvent::ForkManager version 0.01.
 
 =head1 INTERFACE
 
-=head2 Functions
+=head2 Methods
 
-=head3 C<< hello() >>
+=head3 C<< new >>
+
+# TODO
+
+=head3 C<< start >>
+
+# TODO
+
+=head3 C<< wait_all_children >>
+
+# TODO
+
+=head3 C<< signal_all_children >>
+
+# TODO
+
+=head3 C<< on_error >>
+
+# TODO
+
+=head3 C<< on_finish >>
 
 # TODO
 
