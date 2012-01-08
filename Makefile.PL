@@ -26,6 +26,10 @@ use inc::Module::Install;
 
 all_from 'lib/AnyEvent/ForkManager.pm';
 
+requires 'AnyEvent';
+requires 'Proc::Wait3';
+requires 'Scalar::Util';
+requires 'Class::Accessor::Lite' => '0.04';
 
 test_requires 'Test::More'     => '0.88';
 test_requires 'Test::Requires' => '0.06';
