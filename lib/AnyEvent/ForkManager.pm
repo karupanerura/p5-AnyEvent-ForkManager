@@ -191,27 +191,44 @@ This document describes AnyEvent::ForkManager version 0.01.
     use AnyEvent::ForkManager;
 
     my $MAX_WORKERS = 10;
-    my $pm = AnyEvent::ForkManager->new($MAX_WORKERS);
+    my $pm = AnyEvent::ForkManager->new(max_workers => $MAX_WORKERS);
 
     use List::MoreUtils qw/shuffle/;
     my @all_data = shuffle(1 .. 100);
     foreach $data (@all_data) {
         $pm->start(
             cb => sub {
+                my($pm, $data) = @_;
                 # ... do some work with $data in the child process ...
             },
             args => [$data]
         );
     }
 
-    my $cv = AnyEvent->condvar;
-    $pm->wait_all_children(
-        cb => sub {
-            my($pm) = @_;
-            $cv->send;
-        },
-    );
-    $cv->recv;
+    my $wait_blocking = 1;
+    if ($wait_blocking) {
+        # wait with blocking
+        $pm->wait_all_children(
+            cb => sub {
+                my($pm) = @_;
+                $cv->send;
+            },
+            blocking => 1,
+        );
+    }
+    else {
+        my $cv = AnyEvent->condvar;
+
+        # wait with non-blocking
+        $pm->wait_all_children(
+            cb => sub {
+                my($pm) = @_;
+                $cv->send;
+            },
+        );
+
+        $cv->recv;
+    }
 
 =head1 DESCRIPTION
 
