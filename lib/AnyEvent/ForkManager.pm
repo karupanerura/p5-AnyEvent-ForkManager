@@ -179,7 +179,7 @@ __END__
 
 =head1 NAME
 
-AnyEvent::ForkManager - 
+AnyEvent::ForkManager - A simple parallel processing fork manager with AnyEvent
 
 =head1 VERSION
 
