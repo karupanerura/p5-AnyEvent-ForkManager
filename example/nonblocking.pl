@@ -42,7 +42,6 @@ $pm->wait_all_children(
         warn 'called';
         $cv->send;
     },
-    blocking => 1,
 );
 $cv->recv;
 warn 'end';
