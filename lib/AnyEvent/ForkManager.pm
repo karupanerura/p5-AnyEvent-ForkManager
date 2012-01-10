@@ -6,8 +6,8 @@ use warnings;
 our $VERSION = '0.01';
 
 use AnyEvent;
-use Proc::Wait3;
 use Scalar::Util qw/weaken/;
+use POSIX ();
 
 use Class::Accessor::Lite 0.04 (
     ro  => [
@@ -145,7 +145,7 @@ sub wait_all_children {
     my $cb = $arg->{cb};
     if ($arg->{blocking}) {
         until ($self->num_workers == 0 and $self->num_queues == 0) {
-            if (my ($pid, $status) = Proc::Wait3::wait3(1)) {
+            if (my ($pid, $status) = _wait_with_status()) {
                 if (my $cb = $self->proccess_cb->{$pid}) {
                     $cb->($pid, $status);
                 }
@@ -174,6 +174,15 @@ sub wait_all_children {
     }
 }
 
+# function
+sub _wait_with_status {## blocking
+    local ${^CHILD_ERROR_NATIVE} ;
+    my $pid = waitpid(-1, 0);
+    return ($pid > 0) ?
+        ($pid, ${^CHILD_ERROR_NATIVE} ):
+        (undef);
+}
+
 1;
 __END__
 
@@ -193,7 +202,7 @@ This document describes AnyEvent::ForkManager version 0.01.
     my $MAX_WORKERS = 10;
     my $pm = AnyEvent::ForkManager->new(max_workers => $MAX_WORKERS);
 
-    use List::MoreUtils qw/shuffle/;
+    use List::Util qw/shuffle/;
     my @all_data = shuffle(1 .. 100);
     foreach $data (@all_data) {
         $pm->start(
@@ -232,7 +241,15 @@ This document describes AnyEvent::ForkManager version 0.01.
 
 =head1 DESCRIPTION
 
-# TODO
+C<AnyEvent::ForkManager> is much like L<Parallel::ForkManager>,
+but supports non-blocking interface with L<AnyEvent>.
+
+L<Parallel::ForkManager> is useful but,
+it is difficult to use in conjunction with L<AnyEvent>.
+Because L<Parallel::ForkManager>'s some methods are blocking the event loop of the L<AnyEvent>.
+
+You can accomplish the same goals without adversely affecting the L<Parallel::ForkManager> to L<AnyEvent::ForkManager> with L<AnyEvent>.
+Because L<AnyEvent::ForkManager>'s methods are non-blocking the event loop of the L<AnyEvent>.
 
 =head1 INTERFACE
 
@@ -240,7 +257,37 @@ This document describes AnyEvent::ForkManager version 0.01.
 
 =head3 C<< new >>
 
-# TODO
+This is constructer.
+
+=over 4
+
+=item max_workers
+
+max parallel forking count. (default: 10)
+
+=item on_finish
+
+finished child process callback.
+
+=item on_error
+
+fork error callback.
+
+=back
+
+=head4 Example
+
+  my $pm = AnyEvent::ForkManager->new(
+      max_workers => 2,   ## default 10
+      on_finish => sub {  ## optional
+          my($pid, $status, @anyargs) = @_;
+          ## this callback call when finished child process.(like AnyEvent->child)
+      },
+      on_error => sub {   ## optional
+          my($pm, @anyargs) = @_;
+          ## this callback call when fork failed.
+      },
+  );
 
 =head3 C<< start >>
 
