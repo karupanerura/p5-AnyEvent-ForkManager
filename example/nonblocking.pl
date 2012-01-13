@@ -25,7 +25,7 @@ foreach my $data (@all_data) {
 }
 
 $pm->on_finish(sub{
-    my($pid, $status, $data) = @_;
+    my($pm, $pid, $status, $data) = @_;
 
     printf("finished child proccess. {pid => %d, status => %d, sleep_time => %d}\n", $pid, $status >> 8, $data);
 });

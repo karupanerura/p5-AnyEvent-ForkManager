@@ -14,7 +14,7 @@ use Class::Accessor::Lite 0.04 (
         qw/max_workers manager_pid/,
     ],
     rw  => [
-        qw/on_finish on_error/,
+        qw/on_finish on_error on_enqueue on_dequeue on_working_max/,
         qw/proccess_queue running_worker proccess_cb wait_async/,
     ],
 );
@@ -27,8 +27,6 @@ sub new {
     $arg->{max_workers} ||= $class->default_max_workers;
 
     bless(+{
-        on_finish => sub {},
-        on_error  => sub {},
         %$arg,
         manager_pid => $$,
     } => $class)->init;
@@ -69,6 +67,7 @@ sub start {
         if $self->is_child;
 
     if ($self->is_working_max) {## child working max
+        $self->_run_cb('on_working_max' => @{ $arg->{args} });
         $self->enqueue($arg);
         return;
     }
@@ -76,7 +75,7 @@ sub start {
         my $pid = fork;
 
         if (not(defined $pid)) {
-            $self->on_error->($self, @{ $arg->{args} });
+            $self->_run_cb('on_error' => @{ $arg->{args} });
             return;
         }
         elsif ($pid) {
@@ -87,7 +86,7 @@ sub start {
 
                 delete $self->running_worker->{$pid};
                 delete $self->proccess_cb->{$pid};
-                $self->on_finish->($pid, $status, @{ $arg->{args} });
+                $self->_run_cb('on_finish' => $pid, $status, @{ $arg->{args} });
 
                 if ($self->num_queues) {
                     ## dequeue
@@ -120,14 +119,21 @@ sub finish {
 sub enqueue {
     my($self, $arg) = @_;
 
+    $self->_run_cb('on_enqueue' => @{ $arg->{args} });
     push @{ $self->proccess_queue } => $arg;
 }
 
 sub dequeue {
     my $self = shift;
 
-    if (my $arg = shift @{ $self->proccess_queue }) {
-        $self->start($arg);
+    until ($self->is_working_max) {
+        last unless @{ $self->process_queue };
+
+        # dequeue
+        if (my $arg = shift @{ $self->proccess_queue }) {
+            $self->_run_cb('on_dequeue' => @{ $arg->{args} });
+            $self->start($arg);
+        }
     }
 }
 
@@ -171,6 +177,16 @@ sub wait_all_children {
         );
 
         $self->wait_async(1);
+    }
+}
+
+sub _run_cb {
+    my $self = shift;
+    my $name = shift;
+
+    my $cb = $self->$name();
+    if ($cb) {
+        $self->$cb(@_);
     }
 }
 
