@@ -13,7 +13,7 @@ use Class::Accessor::Lite 0.04 (
         qw/max_workers manager_pid/,
     ],
     rw  => [
-        qw/on_finish on_error on_enqueue on_dequeue on_working_max/,
+        qw/on_start on_finish on_error on_enqueue on_dequeue on_working_max/,
         qw/process_queue running_worker process_cb wait_async/,
     ],
 );
@@ -80,6 +80,7 @@ sub start {
         elsif ($pid) {
             # parent
             weaken($self);
+            $self->_run_cb('on_start' => $pid, @{ $arg->{args} });
             $self->process_cb->{$pid} = sub {
                 my ($pid, $status) = @_;
 
