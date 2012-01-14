@@ -15,7 +15,7 @@ use Class::Accessor::Lite 0.04 (
     ],
     rw  => [
         qw/on_finish on_error on_enqueue on_dequeue on_working_max/,
-        qw/proccess_queue running_worker proccess_cb wait_async/,
+        qw/process_queue running_worker process_cb wait_async/,
     ],
 );
 
@@ -35,9 +35,9 @@ sub new {
 sub init {
     my $self = shift;
 
-    $self->proccess_queue([]);
+    $self->process_queue([]);
     $self->running_worker(+{});
-    $self->proccess_cb(+{});
+    $self->process_cb(+{});
 
     return $self;
 }
@@ -56,7 +56,7 @@ sub num_workers {
 
 sub num_queues {
     my $self = shift;
-    return scalar @{ $self->proccess_queue };
+    return scalar @{ $self->process_queue };
 }
 
 sub start {
@@ -81,11 +81,11 @@ sub start {
         elsif ($pid) {
             # parent
             weaken($self);
-            $self->proccess_cb->{$pid} = sub {
+            $self->process_cb->{$pid} = sub {
                 my ($pid, $status) = @_;
 
                 delete $self->running_worker->{$pid};
-                delete $self->proccess_cb->{$pid};
+                delete $self->process_cb->{$pid};
                 $self->_run_cb('on_finish' => $pid, $status, @{ $arg->{args} });
 
                 if ($self->num_queues) {
@@ -95,7 +95,7 @@ sub start {
             };
             $self->running_worker->{$pid} = AnyEvent->child(
                 pid => $pid,
-                cb  => $self->proccess_cb->{$pid},
+                cb  => $self->process_cb->{$pid},
             );
 
             return $pid;
@@ -120,7 +120,7 @@ sub enqueue {
     my($self, $arg) = @_;
 
     $self->_run_cb('on_enqueue' => @{ $arg->{args} });
-    push @{ $self->proccess_queue } => $arg;
+    push @{ $self->process_queue } => $arg;
 }
 
 sub dequeue {
@@ -130,7 +130,7 @@ sub dequeue {
         last unless @{ $self->process_queue };
 
         # dequeue
-        if (my $arg = shift @{ $self->proccess_queue }) {
+        if (my $arg = shift @{ $self->process_queue }) {
             $self->_run_cb('on_dequeue' => @{ $arg->{args} });
             $self->start($arg);
         }
@@ -152,7 +152,7 @@ sub wait_all_children {
     if ($arg->{blocking}) {
         until ($self->num_workers == 0 and $self->num_queues == 0) {
             if (my ($pid, $status) = _wait_with_status()) {
-                if (my $cb = $self->proccess_cb->{$pid}) {
+                if (my $cb = $self->process_cb->{$pid}) {
                     $cb->($pid, $status);
                 }
             }
