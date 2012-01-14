@@ -28,7 +28,6 @@ all_from 'lib/AnyEvent/ForkManager.pm';
 
 requires 'AnyEvent';
 requires 'Scalar::Util';
-requires 'POSIX';
 requires 'Class::Accessor::Lite' => '0.04';
 
 test_requires 'Test::More'     => '0.88';
