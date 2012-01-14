@@ -7,7 +7,6 @@ our $VERSION = '0.01';
 
 use AnyEvent;
 use Scalar::Util qw/weaken/;
-use POSIX ();
 
 use Class::Accessor::Lite 0.04 (
     ro  => [
