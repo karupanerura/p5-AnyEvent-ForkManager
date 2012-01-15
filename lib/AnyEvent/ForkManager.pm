@@ -214,29 +214,38 @@ This document describes AnyEvent::ForkManager version 0.01.
 
     use AnyEvent;
     use AnyEvent::ForkManager;
+    use List::Util qw/shuffle/;
 
     my $MAX_WORKERS = 10;
     my $pm = AnyEvent::ForkManager->new(max_workers => $MAX_WORKERS);
 
-    use List::Util qw/shuffle/;
-    my @all_data = shuffle(1 .. 100);
-    foreach $data (@all_data) {
+    $pm->on_start(sub {
+        my($pm, $pid, $sec) = @_;
+        printf "start sleep %2d sec.\n", $sec;
+    });
+    $pm->on_finish(sub {
+        my($pm, $pid, $status, $sec) = @_;
+        printf "end   sleep %2d sec.\n", $sec;
+    });
+
+    my @sleep_time = shuffle(1 .. 20);
+    foreach my $sec (@sleep_time) {
         $pm->start(
             cb => sub {
-                my($pm, $data) = @_;
-                # ... do some work with $data in the child process ...
+                my($pm, $sec) = @_;
+                sleep $sec;
             },
-            args => [$data]
+            args => [$sec]
         );
     }
 
-    my $wait_blocking = 1;
+    my $wait_blocking = 0;
     if ($wait_blocking) {
         # wait with blocking
         $pm->wait_all_children(
             cb => sub {
                 my($pm) = @_;
-                $cv->send;
+                print "end task!\n";
             },
             blocking => 1,
         );
@@ -248,6 +257,7 @@ This document describes AnyEvent::ForkManager version 0.01.
         $pm->wait_all_children(
             cb => sub {
                 my($pm) = @_;
+                print "end task!\n";
                 $cv->send;
             },
         );
@@ -273,7 +283,7 @@ Because L<AnyEvent::ForkManager>'s methods are non-blocking the event loop of th
 
 =head3 C<< new >>
 
-This is constructer.
+This is constructor.
 
 =over 4
 
