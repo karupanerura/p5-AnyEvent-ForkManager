@@ -291,6 +291,10 @@ This is constructor.
 
 max parallel forking count. (default: 10)
 
+=item on_start
+
+started child process callback.
+
 =item on_finish
 
 finished child process callback.
@@ -298,6 +302,18 @@ finished child process callback.
 =item on_error
 
 fork error callback.
+
+=item on_enqueue
+
+# TODO
+
+=item on_dequeue
+
+# TODO
+
+=item on_working_max
+
+# TODO
 
 =back
 
@@ -321,19 +337,58 @@ fork error callback.
 
 =head3 C<< wait_all_children >>
 
-# TODO
+You can call this method to wait for all the processes which have been forked.
+This can blocking wait or non-blocking wait in AnyEvent's event loop.
+
+=over 4
+
+=item blocking
+
+If this parameter is true, blocking wait enable. (default: false)
+
+=item cb
+
+finished all the processes callback.
+
+=back
+
+=head4 Example
+
+  $pm->wait_all_children(
+      blocking => 0,
+      cb => sub {   ## optional
+          my($pm) = @_;
+          ## this callback call when finished all child process.
+      },
+  );
 
 =head3 C<< signal_all_children >>
 
-# TODO
+Sends signal to all worker processes. Only usable from manager process.
 
 =head3 C<< on_error >>
 
-# TODO
+As a new method's argument.
+
+=head3 C<< on_start >>
+
+As a new method's argument.
 
 =head3 C<< on_finish >>
 
-# TODO
+As a new method's argument.
+
+=head3 C<< on_enqueue >>
+
+As a new method's argument.
+
+=head3 C<< on_dequeue >>
+
+As a new method's argument.
+
+=head3 C<< on_working_max >>
+
+As a new method's argument.
 
 =head1 DEPENDENCIES
 
