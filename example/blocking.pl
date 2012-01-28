@@ -2,13 +2,49 @@ use strict;
 use warnings;
 use utf8;
 
+use List::Util qw/shuffle/;
 use AnyEvent::ForkManager;
 
 my $MAX_WORKERS = 10;
 my $pm = AnyEvent::ForkManager->new(max_workers => $MAX_WORKERS);
 
-use List::Util qw/shuffle/;
-my @all_data = shuffle(1 .. $MAX_WORKERS);
+$pm->on_start(sub{
+    my($pm, $pid, $data) = @_;
+
+    printf("started child proccess. {pid => %d, sleep_time => %d}\n", $pid, $data);
+});
+
+$pm->on_finish(sub{
+    my($pm, $pid, $status, $data) = @_;
+
+    printf("finished child proccess. {pid => %d, status => %d, sleep_time => %d}\n", $pid, $status >> 8, $data);
+});
+
+$pm->on_enqueue(sub{
+    my($pm, $data) = @_;
+
+    printf("enqueued start child proccess. {sleep_time => %d}\n", $data);
+});
+
+$pm->on_dequeue(sub{
+    my($pm, $data) = @_;
+
+    printf("dequeued start child proccess. {sleep_time => %d}\n", $data);
+});
+
+$pm->on_working_max(sub{
+    my($pm, $data) = @_;
+
+    printf("working child process count is max. yet start process {sleep_time => %d}\n", $data);
+});
+
+$pm->on_error(sub{
+    my($pm, $data) = @_;
+
+    printf("fork failed. on dispatch %d. object => %s.}\n", $data, $pm);
+});
+
+my @all_data = shuffle(1 .. $MAX_WORKERS * 2);
 foreach my $data (@all_data) {
     $pm->start(
         cb => sub {
@@ -23,17 +59,6 @@ foreach my $data (@all_data) {
     );
 }
 
-$pm->on_finish(sub{
-    my($pm, $pid, $status, $data) = @_;
-
-    printf("finished child proccess. {pid => %d, status => %d, sleep_time => %d}\n", $pid, $status >> 8, $data);
-});
-$pm->on_error(sub{
-    my($pm, $data) = @_;
-
-    printf("fork failed. on dispatch %d. object => %s.}\n", $data, $pm);
-});
-
 $pm->wait_all_children(
     cb => sub {
         my($pm) = @_;
@@ -41,4 +66,5 @@ $pm->wait_all_children(
     },
     blocking => 1,
 );
+
 warn 'end';
