@@ -89,7 +89,7 @@ sub start {
                 cb  => $self->process_cb->{$pid},
             );
 
-            # delete worker watcher if already finished.
+            # delete worker watcher if already finished child process.
             delete $self->running_worker->{$pid} unless exists $self->process_cb->{$pid};
 
             return $pid;
