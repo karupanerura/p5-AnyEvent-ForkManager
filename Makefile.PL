@@ -28,6 +28,8 @@ all_from 'lib/AnyEvent/ForkManager.pm';
 
 requires 'AnyEvent';
 requires 'Scalar::Util';
+requires 'POSIX';
+requires 'Time::HiRes';
 requires 'Class::Accessor::Lite' => '0.04';
 
 test_requires 'Test::More'       => '0.88';
@@ -39,7 +41,6 @@ auto_set_repository;
 
 tests_recursive;
 author_tests 'xt';
-
 
 clean_files qw(
     AnyEvent-ForkManager-*
