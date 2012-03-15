@@ -83,7 +83,7 @@ sub start {
         elsif ($pid) {
             # parent
             $self->_run_cb('on_start' => $pid, @{ $arg->{args} });
-            $self->process_cb->{$pid}     = $self->create_callback(@{ $arg->{args} });
+            $self->process_cb->{$pid}     = $self->_create_callback(@{ $arg->{args} });
             $self->running_worker->{$pid} = AnyEvent->child(
                 pid => $pid,
                 cb  => $self->process_cb->{$pid},
@@ -102,7 +102,7 @@ sub start {
     }
 }
 
-sub create_callback {
+sub _create_callback {
     my($self, @args) = @_;
 
     weaken($self);
@@ -262,31 +262,18 @@ This document describes AnyEvent::ForkManager version 0.01.
         );
     }
 
-    my $wait_blocking = 0;
-    if ($wait_blocking) {
-        # wait with blocking
-        $pm->wait_all_children(
-            cb => sub {
-                my($pm) = @_;
-                print "end task!\n";
-            },
-            blocking => 1,
-        );
-    }
-    else {
-        my $cv = AnyEvent->condvar;
+    my $cv = AnyEvent->condvar;
 
-        # wait with non-blocking
-        $pm->wait_all_children(
-            cb => sub {
-                my($pm) = @_;
-                print "end task!\n";
-                $cv->send;
-            },
-        );
+    # wait with non-blocking
+    $pm->wait_all_children(
+        cb => sub {
+            my($pm) = @_;
+            print "end task!\n";
+            $cv->send;
+        },
+    );
 
-        $cv->recv;
-    }
+    $cv->recv;
 
 =head1 DESCRIPTION
 
@@ -328,15 +315,15 @@ fork error callback.
 
 =item on_enqueue
 
-# TODO
+If push to start up child process queue, this callback is called.
 
 =item on_dequeue
 
-# TODO
+If shift from start up child process queue, this callback is called.
 
 =item on_working_max
 
-# TODO
+If request to start up child process and process count equal max process count, this callback is called.
 
 =back
 
@@ -356,18 +343,42 @@ fork error callback.
 
 =head3 C<< start >>
 
-# TODO
+start child process.
+
+=over 4
+
+=item args
+
+arguments passed to the callback function of the child process.
+
+=item cb
+
+run on child process callback.
+
+=back
+
+=head4 Example
+
+  $pm->start(
+      cb => sub {   ## optional
+          my($pm, $job_id) = @_;
+          ## this callback call in child process.
+      },
+      args => [$job_id],## this arguments passed to the callback function
+  );
 
 =head3 C<< wait_all_children >>
 
 You can call this method to wait for all the processes which have been forked.
-This can blocking wait or non-blocking wait in AnyEvent's event loop.
+This can wait with blocking or wait with non-blocking in event loop of AnyEvent.
+B<feature to wait with blocking is ALPHA quality till the version hits v1.0.0. Things might be broken.>
 
 =over 4
 
 =item blocking
 
 If this parameter is true, blocking wait enable. (default: false)
+B<feature to wait with blocking is ALPHA quality till the version hits v1.0.0. Things might be broken.>
 
 =item cb
 
@@ -378,7 +389,6 @@ finished all the processes callback.
 =head4 Example
 
   $pm->wait_all_children(
-      blocking => 0,
       cb => sub {   ## optional
           my($pm) = @_;
           ## this callback call when finished all child process.
