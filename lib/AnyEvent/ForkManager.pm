@@ -2,11 +2,14 @@ package AnyEvent::ForkManager;
 use 5.008_001;
 use strict;
 use warnings;
+use utf8;
 
 our $VERSION = '0.01';
 
 use AnyEvent;
 use Scalar::Util qw/weaken/;
+use POSIX ();
+use Time::HiRes ();
 
 use Class::Accessor::Lite 0.04 (
     ro  => [
@@ -79,24 +82,15 @@ sub start {
         }
         elsif ($pid) {
             # parent
-            weaken($self);
             $self->_run_cb('on_start' => $pid, @{ $arg->{args} });
-            $self->process_cb->{$pid} = sub {
-                my ($pid, $status) = @_;
-
-                delete $self->running_worker->{$pid};
-                delete $self->process_cb->{$pid};
-                $self->_run_cb('on_finish' => $pid, $status, @{ $arg->{args} });
-
-                if ($self->num_queues) {
-                    ## dequeue
-                    $self->dequeue;
-                }
-            };
+            $self->process_cb->{$pid}     = $self->create_callback(@{ $arg->{args} });
             $self->running_worker->{$pid} = AnyEvent->child(
                 pid => $pid,
                 cb  => $self->process_cb->{$pid},
             );
+
+            # delete worker watcher if already finished.
+            delete $self->running_worker->{$pid} unless exists $self->process_cb->{$pid};
 
             return $pid;
         }
@@ -106,6 +100,23 @@ sub start {
             $self->finish;
         }
     }
+}
+
+sub create_callback {
+    my($self, @args) = @_;
+
+    weaken($self);
+    return sub {
+        my ($pid, $status) = @_;
+        delete $self->running_worker->{$pid};
+        delete $self->process_cb->{$pid};
+        $self->_run_cb('on_finish' => $pid, $status, @args);
+
+        if ($self->num_queues) {
+            ## dequeue
+            $self->dequeue;
+        }
+    };
 }
 
 sub finish {
@@ -150,13 +161,7 @@ sub wait_all_children {
 
     my $cb = $arg->{cb};
     if ($arg->{blocking}) {
-        until ($self->num_workers == 0 and $self->num_queues == 0) {
-            if (my ($pid, $status) = _wait_with_status()) {
-                if (my $cb = $self->process_cb->{$pid}) {
-                    $cb->($pid, $status);
-                }
-            }
-        }
+        $self->_wait_all_children_with_blocking;
         $self->$cb;
     }
     else {
@@ -190,13 +195,31 @@ sub _run_cb {
     }
 }
 
+our $WAIT_INTERVAL = 0.1 * 1000 * 1000;
+sub _wait_all_children_with_blocking {
+    my $self = shift;
+
+    until ($self->num_workers == 0 and $self->num_queues == 0) {
+        my($pid, $status) = _wait_with_status(-1, POSIX::WNOHANG);
+        if ($pid and exists $self->running_worker->{$pid}) {
+            $self->process_cb->{$pid}->($pid, $status);
+        }
+    }
+    continue {
+        # retry interval
+        Time::HiRes::usleep( $WAIT_INTERVAL );
+    }
+}
+
 # function
 sub _wait_with_status {## blocking
-    local ${^CHILD_ERROR_NATIVE} ;
-    my $pid = waitpid(-1, 0);
-    return ($pid > 0) ?
-        ($pid, ${^CHILD_ERROR_NATIVE} ):
-        (undef);
+    my($waitpid, $option) = @_;
+
+    use vmsish 'status';
+    local $?;
+
+    my $pid = waitpid($waitpid, $option);
+    return ($pid, $?);
 }
 
 1;
