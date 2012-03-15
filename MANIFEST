@@ -1,6 +1,9 @@
 .dim.pl
 .shipit
 Changes
+example/blocking.pl
+example/nonblocking-with-signal-exit.pl
+example/nonblocking.pl
 inc/Module/Install.pm
 inc/Module/Install/AuthorTests.pm
 inc/Module/Install/Base.pm
@@ -16,6 +19,7 @@ META.yml
 README
 t/000_load.t
 t/001_basic.t
+t/002_blocking.t
 xt/perlcritic.t
 xt/pod.t
 xt/podcoverage.t

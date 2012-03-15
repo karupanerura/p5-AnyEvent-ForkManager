@@ -65,3 +65,4 @@
 \.o(?:|bj|ld|ut)$
 nytprof
 MYMETA\.yml$
+README\.pod$
