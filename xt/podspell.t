@@ -26,6 +26,7 @@ API
 APIs
 arrayrefs
 arity
+cb
 Changelog
 codebase
 committer
