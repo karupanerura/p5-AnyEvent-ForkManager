@@ -68,6 +68,7 @@ my $pm = AnyEvent::ForkManager->new(
 my $cv = AnyEvent->condvar;
 
 my @all_data = (1 .. $JOB_COUNT);
+my $started_all_process = 0;
 foreach my $exit_code (@all_data) {
     select undef, undef, undef, 0.07;
     my $start_time = Time::HiRes::gettimeofday;
@@ -76,14 +77,18 @@ foreach my $exit_code (@all_data) {
             my($pm, $exit_code) = @_;
             select undef, undef, undef, 0.5;
             isnt $$, $pm->manager_pid, 'called by child';
+            local $SIG{USR1} = sub { $started_all_process = 1; };
+            until ($started_all_process) {}; # wait
             $pm->finish($exit_code);
             fail 'finish failed';
         },
         args => [$exit_code]
     );
     my $end_time = Time::HiRes::gettimeofday;
-    cmp_ok $end_time - $start_time, '<', 0.1, 'non-blocking';
+    cmp_ok $end_time - $start_time, '<', 0.3, 'non-blocking';
 }
+$started_all_process = 1;
+$pm->signal_all_children('USR1');
 
 my $start_time = Time::HiRes::gettimeofday;
 $pm->wait_all_children(
