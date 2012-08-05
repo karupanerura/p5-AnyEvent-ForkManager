@@ -1,5 +1,9 @@
 Revision history for Perl extension AnyEvent::ForkManager
 
+0.02 2012-08-05
+    - fixed bug #78669 (thank SENDU)
+      export constant for old POSIX.pm.
+
 0.01 2012-03-16
     - original version; created by dim
       at Sun Jan  8 09:10:22 2012.

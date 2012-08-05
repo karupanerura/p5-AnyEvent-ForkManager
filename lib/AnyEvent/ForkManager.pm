@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use utf8;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use AnyEvent;
 use Scalar::Util qw/weaken/;
@@ -231,7 +231,7 @@ AnyEvent::ForkManager - A simple parallel processing fork manager with AnyEvent
 
 =head1 VERSION
 
-This document describes AnyEvent::ForkManager version 0.01.
+This document describes AnyEvent::ForkManager version 0.02.
 
 =head1 SYNOPSIS
 
