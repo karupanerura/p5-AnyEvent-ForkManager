@@ -8,7 +8,7 @@ our $VERSION = '0.01';
 
 use AnyEvent;
 use Scalar::Util qw/weaken/;
-use POSIX ();
+use POSIX qw/WNOHANG/;
 use Time::HiRes ();
 
 use Class::Accessor::Lite 0.04 (
@@ -200,7 +200,7 @@ sub _wait_all_children_with_blocking {
     my $self = shift;
 
     until ($self->num_workers == 0 and $self->num_queues == 0) {
-        my($pid, $status) = _wait_with_status(-1, POSIX::WNOHANG);
+        my($pid, $status) = _wait_with_status(-1, WNOHANG);
         if ($pid and exists $self->running_worker->{$pid}) {
             $self->process_cb->{$pid}->($pid, $status);
         }
