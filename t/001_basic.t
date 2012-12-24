@@ -68,14 +68,13 @@ my $cv = AnyEvent->condvar;
 my @all_data = (1 .. $JOB_COUNT);
 my $started_all_process = 0;
 foreach my $exit_code (@all_data) {
-    select undef, undef, undef, 0.07;
     $pm->start(
         cb => sub {
             my($pm, $exit_code) = @_;
-            select undef, undef, undef, 0.5;
-            isnt $$, $pm->manager_pid, 'called by child';
             local $SIG{USR1} = sub { $started_all_process = 1; };
+            isnt $$, $pm->manager_pid, 'called by child';
             until ($started_all_process) {}; # wait
+            note "exit_code: $exit_code";
             $pm->finish($exit_code);
             fail 'finish failed';
         },
