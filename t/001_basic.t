@@ -71,7 +71,7 @@ foreach my $exit_code (@all_data) {
     $pm->start(
         cb => sub {
             my($pm, $exit_code) = @_;
-            local $SIG{USR1} = sub { $started_all_process = 1; };
+            local $SIG{INT} = sub { $started_all_process = 1; };
             isnt $$, $pm->manager_pid, 'called by child';
             until ($started_all_process) {}; # wait
             note "exit_code: $exit_code";
@@ -82,7 +82,7 @@ foreach my $exit_code (@all_data) {
     );
 }
 $started_all_process = 1;
-$pm->signal_all_children('USR1');
+$pm->signal_all_children('INT');
 
 $pm->wait_all_children(
     cb => sub {
