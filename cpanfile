@@ -8,7 +8,6 @@ requires 'perl', '5.008001';
 on build => sub {
     requires 'ExtUtils::MakeMaker', '6.59';
     requires 'Test::More', '0.88';
-    requires 'Test::Requires', '0.06';
     requires 'Test::SharedFork';
     requires 'Time::HiRes';
 };
