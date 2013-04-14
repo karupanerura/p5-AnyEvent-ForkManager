@@ -28,6 +28,7 @@ cover_db*
 /AnyEvent-ForkManager-*
 /.build
 /_build_params
+/_build
 /Build
 !Build/
 !META.json

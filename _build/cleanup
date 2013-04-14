@@ -1,5 +1,0 @@
-do{ my $x = {
-       'blib' => 1,
-       'AnyEvent-ForkManager-0.03' => 1
-     };
-$x; }
