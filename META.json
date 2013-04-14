@@ -28,7 +28,6 @@
          "requires" : {
             "ExtUtils::MakeMaker" : "6.59",
             "Test::More" : "0.88",
-            "Test::Requires" : "0.06",
             "Test::SharedFork" : "0",
             "Time::HiRes" : "0"
          }
@@ -72,7 +71,7 @@
          "web" : "https://github.com/karupanerura/p5-AnyEvent-ForkManager"
       }
    },
-   "version" : "0.03",
+   "version" : "0.04",
    "x_contributors" : [
       "ããã±ã­ãã <karupanerura@karupas-mbp.local>"
    ]

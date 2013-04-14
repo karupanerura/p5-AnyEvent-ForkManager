@@ -4,7 +4,7 @@ AnyEvent::ForkManager - A simple parallel processing fork manager with AnyEvent
 
 # VERSION
 
-This document describes AnyEvent::ForkManager version 0.03.
+This document describes AnyEvent::ForkManager version 0.04.
 
 # SYNOPSIS
 
