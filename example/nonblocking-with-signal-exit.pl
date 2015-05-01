@@ -54,7 +54,7 @@ foreach my $data (@all_data) {
 
             my $finish = time + $data;
             1 while (time <= $finish);
-            printf("Sleeped %d sec.\n", $data);
+            printf("Slept %d sec.\n", $data);
 
             my $exit_code = $data;
             printf("  Exit code = %d\n", $exit_code);

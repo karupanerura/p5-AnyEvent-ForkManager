@@ -50,7 +50,7 @@ foreach my $data (@all_data) {
         cb => sub {
             my($pm, $data) = @_;
             sleep $data;
-            printf("Sleeped %d sec.\n", $data);
+            printf("Slept %d sec.\n", $data);
             my $exit_code = $data;
             printf("  Exit code = %d\n", $exit_code);
             $pm->finish($exit_code);
