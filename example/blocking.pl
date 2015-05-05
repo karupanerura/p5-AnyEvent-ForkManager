@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use utf8;
 
 use List::Util qw/shuffle/;
 use AnyEvent::ForkManager;
