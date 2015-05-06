@@ -4,7 +4,7 @@
       "Kenta Sato <karupa@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v0.0.53, CPAN::Meta::Converter version 2.130880",
+   "generated_by" : "Minilla/v2.3.0, CPAN::Meta::Converter version 2.143240",
    "license" : [
       "perl_5"
    ],
@@ -20,7 +20,9 @@
          "inc",
          "share",
          "eg",
-         "examples"
+         "examples",
+         "author",
+         "builder"
       ]
    },
    "prereqs" : {
@@ -28,24 +30,22 @@
          "requires" : {
             "ExtUtils::MakeMaker" : "6.59",
             "Test::More" : "0.88",
-            "Test::SharedFork" : "0",
+            "Test::SharedFork" : "0.31",
             "Time::HiRes" : "0"
          }
       },
       "configure" : {
          "requires" : {
-            "CPAN::Meta" : "0",
-            "CPAN::Meta::Prereqs" : "0",
             "Module::Build" : "0.38"
          }
       },
       "develop" : {
          "requires" : {
-            "Pod::Wordlist::hanekomu" : "0",
             "Test::CPAN::Meta" : "0",
-            "Test::MinimumVersion" : "0.10108",
+            "Test::MinimumVersion::Fast" : "0.04",
+            "Test::PAUSE::Permissions" : "0.04",
             "Test::Pod" : "1.41",
-            "Test::Spelling" : "0"
+            "Test::Spellunker" : "v0.2.7"
          }
       },
       "runtime" : {
@@ -71,8 +71,10 @@
          "web" : "https://github.com/karupanerura/p5-AnyEvent-ForkManager"
       }
    },
-   "version" : "0.04",
+   "version" : "0.05",
    "x_contributors" : [
-      "ããã±ã­ãã <karupanerura@karupas-mbp.local>"
+      "かるぱねるら <karupanerura@karupas-mbp.local>",
+      "E. Choroba <choroba@matfyz.cz>",
+      "karupanerura <karupanerura@users.noreply.github.com>"
    ]
 }

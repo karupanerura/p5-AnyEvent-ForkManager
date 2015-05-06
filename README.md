@@ -4,7 +4,7 @@ AnyEvent::ForkManager - A simple parallel processing fork manager with AnyEvent
 
 # VERSION
 
-This document describes AnyEvent::ForkManager version 0.04.
+This document describes AnyEvent::ForkManager version 0.05.
 
 # SYNOPSIS
 
@@ -50,15 +50,15 @@ This document describes AnyEvent::ForkManager version 0.04.
 
 # DESCRIPTION
 
-`AnyEvent::ForkManager` is much like [Parallel::ForkManager](http://search.cpan.org/perldoc?Parallel::ForkManager),
-but supports non-blocking interface with [AnyEvent](http://search.cpan.org/perldoc?AnyEvent).
+`AnyEvent::ForkManager` is much like [Parallel::ForkManager](https://metacpan.org/pod/Parallel::ForkManager),
+but supports non-blocking interface with [AnyEvent](https://metacpan.org/pod/AnyEvent).
 
-[Parallel::ForkManager](http://search.cpan.org/perldoc?Parallel::ForkManager) is useful but,
-it is difficult to use in conjunction with [AnyEvent](http://search.cpan.org/perldoc?AnyEvent).
-Because [Parallel::ForkManager](http://search.cpan.org/perldoc?Parallel::ForkManager)'s some methods are blocking the event loop of the [AnyEvent](http://search.cpan.org/perldoc?AnyEvent).
+[Parallel::ForkManager](https://metacpan.org/pod/Parallel::ForkManager) is useful but,
+it is difficult to use in conjunction with [AnyEvent](https://metacpan.org/pod/AnyEvent).
+Because [Parallel::ForkManager](https://metacpan.org/pod/Parallel::ForkManager)'s some methods are blocking the event loop of the [AnyEvent](https://metacpan.org/pod/AnyEvent).
 
-You can accomplish the same goals without adversely affecting the [Parallel::ForkManager](http://search.cpan.org/perldoc?Parallel::ForkManager) to [AnyEvent::ForkManager](http://search.cpan.org/perldoc?AnyEvent::ForkManager) with [AnyEvent](http://search.cpan.org/perldoc?AnyEvent).
-Because [AnyEvent::ForkManager](http://search.cpan.org/perldoc?AnyEvent::ForkManager)'s methods are non-blocking the event loop of the [AnyEvent](http://search.cpan.org/perldoc?AnyEvent).
+You can accomplish the same goals without adversely affecting the [Parallel::ForkManager](https://metacpan.org/pod/Parallel::ForkManager) to [AnyEvent::ForkManager](https://metacpan.org/pod/AnyEvent::ForkManager) with [AnyEvent](https://metacpan.org/pod/AnyEvent).
+Because [AnyEvent::ForkManager](https://metacpan.org/pod/AnyEvent::ForkManager)'s methods are non-blocking the event loop of the [AnyEvent](https://metacpan.org/pod/AnyEvent).
 
 # INTERFACE
 
@@ -136,12 +136,12 @@ start child process.
 
 You can call this method to wait for all the processes which have been forked.
 This can wait with blocking or wait with non-blocking in event loop of AnyEvent.
-__feature to wait with blocking is ALPHA quality till the version hits v1.0.0. Things might be broken.__
+**feature to wait with blocking is ALPHA quality till the version hits v1.0.0. Things might be broken.**
 
 - blocking
 
     If this parameter is true, blocking wait enable. (default: false)
-    __feature to wait with blocking is ALPHA quality till the version hits v1.0.0. Things might be broken.__
+    **feature to wait with blocking is ALPHA quality till the version hits v1.0.0. Things might be broken.**
 
 - cb
 
@@ -196,10 +196,10 @@ to cpan-RT.
 
 # SEE ALSO
 
-[AnyEvent](http://search.cpan.org/perldoc?AnyEvent)
-[AnyEvent::Util](http://search.cpan.org/perldoc?AnyEvent::Util)
-[Parallel::ForkManager](http://search.cpan.org/perldoc?Parallel::ForkManager)
-[Parallel::Prefork](http://search.cpan.org/perldoc?Parallel::Prefork)
+[AnyEvent](https://metacpan.org/pod/AnyEvent)
+[AnyEvent::Util](https://metacpan.org/pod/AnyEvent::Util)
+[Parallel::ForkManager](https://metacpan.org/pod/Parallel::ForkManager)
+[Parallel::Prefork](https://metacpan.org/pod/Parallel::Prefork)
 
 # AUTHOR
 
