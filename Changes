@@ -2,6 +2,10 @@ Revision history for Perl extension AnyEvent::ForkManager
 
 {{$NEXT}}
 
+0.06 2015-05-06T02:55:20Z
+    - re-packaging.
+    - fixed deps.
+
 0.05 2015-05-06T02:19:37Z
     - (no feature changes.)
     - use Time::HiRes::sleep for sleep in author test. (choroba)
