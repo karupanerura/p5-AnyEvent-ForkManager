@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use utf8;
 
 use AnyEvent;
 use AnyEvent::ForkManager;
