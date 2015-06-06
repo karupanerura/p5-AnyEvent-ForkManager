@@ -28,7 +28,7 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.38"
+            "Module::Build::Tiny" : "0.035"
          }
       },
       "develop" : {
@@ -70,6 +70,7 @@
       }
    },
    "version" : "0.06",
+   "x_authority" : "cpan:KARUPA",
    "x_contributors" : [
       "かるぱねるら <karupanerura@karupas-mbp.local>",
       "E. Choroba <choroba@matfyz.cz>",

@@ -6,7 +6,7 @@ requires 'Time::HiRes';
 requires 'perl', '5.008_001';
 
 on configure => sub {
-    requires 'Module::Build';
+    requires 'Module::Build::Tiny', '0.035';
 };
 
 on test => sub {

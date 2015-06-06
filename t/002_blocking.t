@@ -1,7 +1,7 @@
 #!perl -w
 use strict;
-use Test::More;
-use Test::SharedFork;
+use Test::More 0.98;
+use Test::SharedFork 0.31;
 
 use AnyEvent;
 use AnyEvent::ForkManager;
