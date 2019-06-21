@@ -2,6 +2,10 @@ Revision history for Perl extension AnyEvent::ForkManager
 
 {{$NEXT}}
 
+0.07 2019-06-21T21:25:37Z
+
+    - improve test script stability
+
 0.06 2015-05-06T02:55:20Z
 
     - re-packaging.
