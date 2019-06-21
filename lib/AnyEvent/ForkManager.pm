@@ -224,6 +224,8 @@ sub _wait_with_status {## blocking
 1;
 __END__
 
+=for stopwords cb
+
 =head1 NAME
 
 AnyEvent::ForkManager - A simple parallel processing fork manager with AnyEvent
