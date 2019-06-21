@@ -4,13 +4,13 @@
       "Kenta Sato <karupa@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.4.1, CPAN::Meta::Converter version 2.150001",
+   "generated_by" : "Minilla/v3.1.4, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "perl_5"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-      "version" : "2"
+      "version" : 2
    },
    "name" : "AnyEvent-ForkManager",
    "no_index" : {
@@ -53,7 +53,8 @@
       "test" : {
          "requires" : {
             "Test::More" : "0.98",
-            "Test::SharedFork" : "0.31"
+            "Test::SharedFork" : "0.31",
+            "Test::SharedObject" : "0"
          }
       }
    },
@@ -72,8 +73,9 @@
    "version" : "0.06",
    "x_authority" : "cpan:KARUPA",
    "x_contributors" : [
-      "かるぱねるら <karupanerura@karupas-mbp.local>",
       "E. Choroba <choroba@matfyz.cz>",
       "karupanerura <karupanerura@users.noreply.github.com>"
-   ]
+   ],
+   "x_serialization_backend" : "JSON::PP version 4.03",
+   "x_static_install" : 1
 }
